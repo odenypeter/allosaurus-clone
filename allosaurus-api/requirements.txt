@@ -1,0 +1,9 @@
+allosaurus
+databases
+alembic
+asyncpg
+sqlmodel
+fastapi
+uvicorn
+aiosqlite
+python-multipart

@@ -1,0 +1,122 @@
+<mat-grid-list cols="1" rowHeight="12:1">
+  <mat-grid-tile [rowspan]="1.5">
+    <div class="audio-text">
+      <ng-container *ngIf="randomText$ | async; else defaultText">
+        <h2>{{randomText?.title}}</h2>
+        <p>
+          {{randomText?.passage}}
+        </p>
+      </ng-container>
+      <ng-template #defaultText>
+        <h2>Sample Text</h2>
+        <p>
+          Sunset is the time of day when our sky meets the outer space solar winds.
+          There are blue, pink, and purple swirls, spinning and twisting, like clouds of balloons caught in a whirlwind.
+          The sun moves slowly to hide behind the line of horizon, while the moon races to take its place in prominence atop the night sky.
+          People slow to a crawl, entranced, fully forgetting the deeds that must still be done.
+          There is a coolness, a calmness, when the sun does set.
+        </p>
+      </ng-template>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="changeSampleText()"
+        > Change sample text
+      </button>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile [rowspan]="1.1">
+    <div class="recording-area">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="startAudioRecording()"
+        *ngIf="!isAudioRecording && !audioBlobUrl"> Start Recording </button>
+
+      <button
+        mat-raised-button
+        color="secondary"
+        (click)="resetForms()"
+        *ngIf="!isAudioRecording && audioBlobUrl"
+      >
+        Clear Recording
+      </button>
+
+      <div *ngIf="isAudioRecording && !audioBlobUrl">
+        <div
+          id="audioTimer"
+          *ngIf="isAudioRecording && !audioBlobUrl"
+        >
+          {{ audioRecordedTime }}
+        </div>
+        <br>
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+        <br>
+        <button
+          mat-raised-button
+          color="danger"
+          (click)="stopAudioRecording()"
+        >
+          Stop Recording
+        </button>
+      </div>
+
+      <br>
+      <div>
+        <audio controls="" *ngIf="!isAudioRecording && audioBlobUrl">
+          <source [src]="audioBlobUrl" type="audio/wav">
+        </audio>
+      </div>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile [rowspan]="1.5">
+    <div class="drop-area">
+      <ngx-file-drop
+        dropZoneLabel="Drop files here"
+        accept=".wav"
+        [multiple]="false"
+        (onFileDrop)="dropped($event)"
+      >
+        <ng-template
+          ngx-file-drop-content-tmp
+          let-openFileSelector="openFileSelector"
+        >
+          <p>Drag and drop a .wav file here or</p>
+          <p>
+            <button
+              mat-raised-button
+              color="accent"
+              (click)="openFileSelector()"
+            >Browse Files</button>
+          </p>
+        </ng-template>
+      </ngx-file-drop>
+      <div class="upload-table" *ngIf="files?.length">
+        <p *ngFor="let item of files; let i=index">
+          Selected File: <span><strong>{{ item.relativePath }}</strong></span>
+        </p>
+      </div>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="example-button-row">
+      <button mat-raised-button (click)="resetForms()">Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submitAudio()"
+        [disabled]="!audioFile"
+      >Submit Audio File</button>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile *ngIf="formSubmitted">
+    <div class="example-button-row" *ngIf="fileResponse">
+      <h2>Results:</h2>
+      <p>{{fileResponse.result}}</p>
+    </div>
+    <div class="example-button-row" *ngIf="backendError">
+      <h2>Error:</h2>
+      <p>There was a problem processing the audio file</p>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
