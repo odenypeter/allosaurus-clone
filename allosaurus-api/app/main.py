@@ -1,17 +1,15 @@
 from fastapi import (
     FastAPI, UploadFile, File, Depends
 )
+from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel
-from databases import Database
 
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .database import get_session
 from .models import SampleText
-
-from fastapi.middleware.cors import CORSMiddleware
-
 from .utils import AudioProcessor
 
 app = FastAPI()
@@ -35,12 +33,9 @@ class ResponseModel(BaseModel):
 
 @app.post("/api/process_audio/")
 async def process_audio(file: UploadFile = File()):
-    print('AudioFile::', file.file)
     # process file data here
     recognizer = AudioProcessor()
     file_path = recognizer.write_file_to_directory(file)
-    print('File::', file_path)
-
     result = recognizer.get_tokens(file_path)
 
     return dict(result=f'{result}')

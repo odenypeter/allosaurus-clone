@@ -28,20 +28,3 @@ class AudioProcessor:
             shutil.copyfileobj(uploaded_file.file, file_object)
 
         return file_location
-
-
-class DatabaseUtil:
-    def __init__(self, dat):
-        self.database = Database("sqlite:///test.db")
-
-    async def database_connect(self):
-        await self.database.connect()
-
-    async def database_disconnect(self):
-        await self.database.disconnect()
-
-    async def fetch_data(self):
-        query = "SELECT * FROM tablename WHERE ID={}".format(str(id))
-        results = await self.database.fetch_all(query=query)
-
-        return  results
