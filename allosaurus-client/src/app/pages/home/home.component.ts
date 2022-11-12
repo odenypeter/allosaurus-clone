@@ -118,10 +118,12 @@ export class HomeComponent implements OnInit {
         if (fileResponse) {
           this.fileProcessing = false;
           this.fileResponse = fileResponse;
+          destroySub$.next();
         }
       }),
       catchError(error => {
         this.backendError = true;
+        console.error('Error::', error);
         destroySub$.next();
         return EMPTY;
       })
@@ -133,6 +135,7 @@ export class HomeComponent implements OnInit {
    */
   startAudioRecording() {
     if (!this.isAudioRecording) {
+      this.resetForms();
       this.isAudioRecording = true;
       this.audioRecordingService.startRecording();
     }

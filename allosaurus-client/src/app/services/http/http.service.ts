@@ -30,11 +30,6 @@ export class HttpService {
       options
     ).pipe(
       retry(2),
-      catchError((error) => {
-        // handle http errors accordingly
-        console.log(error)
-        return EMPTY;
-      }),
       shareReplay(1)
     );
   }
